@@ -4,6 +4,8 @@
   "description": "Checks schema of JSON return types",
   "main": "./src/index.js",
   "scripts": {
+    "lint": "prettier --write \"{./test.js,./src/*.js,./src/**/*.js}\"",
+    "build": "npm run lint && rollup --config",
     "test": "ava"
   },
   "repository": {
@@ -21,7 +23,13 @@
     "url": "https://github.com/jschatz1/mcgorgeous/issues"
   },
   "homepage": "https://github.com/jschatz1/mcgorgeous#readme",
-  "dependencies": {
-    "ava": "^2.1.0"
+  "devDependencies": {
+    "@babel/core": "^7.4.5",
+    "@babel/preset-env": "^7.4.5",
+    "ava": "^2.1.0",
+    "prettier": "^1.18.2",
+    "rollup": "^1.16.4",
+    "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-node-resolve": "^5.2.0"
   }
 }
