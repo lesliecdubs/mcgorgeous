@@ -1,4 +1,11 @@
-import { isPlainObject, looseEqual } from "./util";
+import {
+  isPlainObject,
+  looseEqual,
+  arrayDifference,
+  isString,
+  isNumeric,
+  isBoolean
+} from "./util";
 
 let uid = 0;
 
@@ -13,59 +20,51 @@ function _traverseObjects(val1, val2) {
   const isO2 = isPlainObject(val2);
   const isA1 = Array.isArray(val1);
   const isA2 = Array.isArray(val2);
-  let i, keys1, keys2, result;
+  let i, keys1, keys2;
   if (isO1 || isO2) {
-    console.log("doing objects");
     if (!isO2 || !isO1) {
-      return {
-        result: false,
-        message: "Schema has object where data does not",
-        info: []
-      };
+      throw Error(`Schema is "object", data is ${typeof val2}`);
     }
     //loop object
-    keys1 = Object.keys(val1);
-    keys2 = Object.keys(val2);
+    keys1 = Object.keys(val1).sort();
+    keys2 = Object.keys(val2).sort();
     if (!looseEqual(keys1, keys2)) {
-      console.log("no match");
-      return {
-        result: false,
-        message: "Keys in schema don't match keys in data",
-        info: [keys1, keys2]
-      };
+      throw Error(
+        `Keys in schema don't match keys in data: ${JSON.stringify(
+          arrayDifference(keys1, keys2)
+        )}`
+      );
     }
     i = keys1.length;
-    console.log("i", i);
     while (i--) {
-      result = _traverseObjects(val1[keys1[i]], val2[keys2[i]]);
-      console.log("while, ", result);
-      if (!result) return result;
+      _traverseObjects(val1[keys1[i]], val2[keys2[i]]);
     }
   } else if (isA1 || isA2) {
-    console.log("doing arrays");
     if (!isA2 || !isA1) {
-      return {
-        result: false,
-        message: "Schema has Array where data does not",
-        info: []
-      };
+      throw Error("Schema has Array where data does not");
     }
     i = val2.length;
     while (i--) {
-      result = _traverseObjects(val1[0], val2[i]);
-      console.log("while, A ", result);
-      if (!result) return result;
+      _traverseObjects(val1[0], val2[i]);
     }
   } else {
-    console.log(
-      "vals",
-      typeof val1,
-      typeof val2 === "object" ? Object.keys(val2) : val2
-    );
+    switch (val1) {
+      case "string":
+        if (!isString(val2)) {
+          throw Error(`"${val2}" is not a string.`);
+        }
+        break;
+      case 0:
+        if (!isNumeric(val2)) {
+          throw Error(`"${val2}" is not numeric.`);
+        }
+        break;
+      case true:
+        if (!isBoolean(val2)) {
+          throw Error(`"${val2}" is not a boolean.`);
+        }
+        break;
+    }
   }
-  return {
-    result: true,
-    message: "Schema matches data",
-    info: []
-  };
+  return true;
 }

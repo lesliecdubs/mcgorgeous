@@ -318,6 +318,22 @@ export function looseEqual(a, b) {
   }
 }
 
+export function isBoolean(b) {
+  return b === true || b === false;
+}
+
+export function isNumeric(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+export function isString(x) {
+  return Object.prototype.toString.call(x) === "[object String]";
+}
+
+export function arrayDifference(arr1, arr2) {
+  return arr1.filter(x => !arr2.includes(x));
+}
+
 /**
  * Return the first index at which a loosely equal value can be
  * found in the array (if value is a plain object, the array must
