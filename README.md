@@ -55,6 +55,20 @@ try{
 [{ id: "boolean" }];
 ```
 
+### Null type
+```javascript
+[{ id: null }];
+```
+Null type will be skipped. Can be `null` or `"null"`.
+
+### Not Null
+```javascript
+[{ name: "string notnull" }];
+[{ name: "number notnull" }];
+[{ name: "boolean notnull" }];
+```
+Will throw an error if the strings value is null.
+
 ### Array of type
 ```javascript
 {

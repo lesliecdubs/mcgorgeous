@@ -2,9 +2,11 @@ import {
   isPlainObject,
   looseEqual,
   arrayDifference,
+  toString,
   isString,
   isNumber,
-  isBoolean
+  isBoolean,
+  isUndef
 } from "./util";
 
 // similar to VueJS traverse https://github.com/vuejs/vue/blob/52719ccab8fccffbdf497b96d3731dc86f04c1ce/src/core/observer/traverse.js#L19
@@ -54,25 +56,40 @@ export function traverseObjects(schema, data) {
       traverseObjects(schema[schemaKeys[i]], data[dataKeys[i]]);
     }
   } else {
-    // Handling literals
-    switch (schema) {
+    const schemaDefinition = toString(schema).split(" ");
+    schemaDefinition.push("");
+    const canBeNull = schemaDefinition[1] !== "notnull";
+    const isUndefProblem = !canBeNull && isUndef(data);
+    switch (schemaDefinition[0]) {
+      case "":
+        break;
+      case "null":
+        break;
       case "string":
-        if (!isString(data)) {
+        if (isUndefProblem) {
+          throw Error("String cannot be null");
+        } else if (!isString(data) && !isUndef(data)) {
           throw Error(`"${data}" is not a string.`);
         }
         break;
       case "number":
-        if (!isNumber(data)) {
+        if (isUndefProblem) {
+          throw Error("Number cannot be null");
+        } else if (!isNumber(data) && !isUndef(data)) {
           throw Error(`"${data}" is not a number.`);
         }
         break;
       case "boolean":
-        if (!isBoolean(data)) {
+        if (isUndefProblem) {
+          throw Error("Boolean cannot be null");
+        } else if (!isBoolean(data) && !isUndef(data)) {
           throw Error(`"${data}" is not a boolean.`);
         }
         break;
       default:
-        throw new Error(`Unknown schema type: ${JSON.stringify(schema)}`);
+        throw new Error(
+          `Unknown schema type: ${JSON.stringify(schemaDefinition[0])}`
+        );
     }
   }
 

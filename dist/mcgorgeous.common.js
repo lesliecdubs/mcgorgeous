@@ -16,6 +16,11 @@ function _typeof(obj) {
 
 /* @flow */
 var emptyObject = Object.freeze({}); // These helpers produce better VM code in JS engines due to their
+// explicitness and function inlining.
+
+function isUndef(v) {
+  return v === undefined || v === null;
+}
 /**
  * Quick object check - this is primarily used to tell
  * Objects from primitive values when we know the value
@@ -37,6 +42,13 @@ var _toString = Object.prototype.toString;
 
 function isPlainObject(obj) {
   return _toString.call(obj) === "[object Object]";
+}
+/**
+ * Convert a value to a string that is actually rendered.
+ */
+
+function toString(val) {
+  return val == null ? "" : Array.isArray(val) || isPlainObject(val) && val.toString === _toString ? JSON.stringify(val, null, 2) : String(val);
 }
 /**
  * Make a map and return a function for checking if a key
@@ -150,14 +162,19 @@ function arrayDifference(arr1, arr2) {
 
 // JSON data won't be cyclical so we don't need to do id checking
 
-function traverseObjects(schema, data) {
-  var isSchemaAnObject = isPlainObject(schema);
-  var isDataAnObject = isPlainObject(data);
-  var isSchemaAnArray = Array.isArray(schema);
-  var isDataAnArray = Array.isArray(data);
+/**
+ * {prop: type} e.g.
+ * {name: String}
+ **/
 
-  if (isSchemaAnArray) {
-    if (!isDataAnArray) {
+function traverseObjects(schema, data) {
+  // On the top level we have three "types" of cases
+  // - Arrays
+  // - Objects
+  // - Literals
+  if (Array.isArray(schema)) {
+    // Handling arrays
+    if (!Array.isArray(data)) {
       throw Error("Schema is looking for \"array\", data is ".concat(JSON.stringify(data)));
     }
 
@@ -166,8 +183,9 @@ function traverseObjects(schema, data) {
     while (i--) {
       traverseObjects(schema[0], data[i]);
     }
-  } else if (isSchemaAnObject) {
-    if (isDataAnArray || !isDataAnObject) {
+  } else if (isPlainObject(schema)) {
+    // Handling object
+    if (Array.isArray(data) || !isPlainObject(data)) {
       throw Error("Schema is looking for \"object\", data is ".concat(JSON.stringify(data)));
     } //loop object
 
@@ -185,39 +203,51 @@ function traverseObjects(schema, data) {
       traverseObjects(schema[schemaKeys[_i]], data[dataKeys[_i]]);
     }
   } else {
-    switch (schema) {
+    var schemaDefinition = toString(schema).split(" ");
+    schemaDefinition.push("");
+    var canBeNull = schemaDefinition[1] !== "notnull";
+    var isUndefProblem = !canBeNull && isUndef(data);
+
+    switch (schemaDefinition[0]) {
+      case "":
+        break;
+
+      case "null":
+        break;
+
       case "string":
-        if (!isString(data)) {
+        if (isUndefProblem) {
+          throw Error("String cannot be null");
+        } else if (!isString(data) && !isUndef(data)) {
           throw Error("\"".concat(data, "\" is not a string."));
         }
 
         break;
 
       case "number":
-        if (!isNumber(data)) {
+        if (isUndefProblem) {
+          throw Error("Number cannot be null");
+        } else if (!isNumber(data) && !isUndef(data)) {
           throw Error("\"".concat(data, "\" is not a number."));
         }
 
         break;
 
       case "boolean":
-        if (!isBoolean(data)) {
+        if (isUndefProblem) {
+          throw Error("Boolean cannot be null");
+        } else if (!isBoolean(data) && !isUndef(data)) {
           throw Error("\"".concat(data, "\" is not a boolean."));
         }
 
         break;
+
+      default:
+        throw new Error("Unknown schema type: ".concat(JSON.stringify(schemaDefinition[0])));
     }
   }
 
   return true;
 }
 
-function index (schema, data) {
-  /**
-   * {prop: type} e.g.
-   * {name: String}
-   **/
-  return traverseObjects(schema, data);
-}
-
-module.exports = index;
+module.exports = traverseObjects;
