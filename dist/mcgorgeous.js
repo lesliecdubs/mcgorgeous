@@ -197,14 +197,14 @@
 
           break;
 
-        case 0:
+        case "number":
           if (!isNumber(data)) {
             throw Error("\"".concat(data, "\" is not a number."));
           }
 
           break;
 
-        case true:
+        case "boolean":
           if (!isBoolean(data)) {
             throw Error("\"".concat(data, "\" is not a boolean."));
           }

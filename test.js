@@ -18,14 +18,14 @@ test("Wrong string type", t => {
 });
 
 test("Correct numeric type", t => {
-  const sitesSchema = [{ id: 0 }];
+  const sitesSchema = [{ id: "number" }];
   const sitesData = [{ id: 3 }, { id: 4 }];
   const checkData = check(sitesSchema, sitesData);
   t.true(checkData);
 });
 
 test("Wrong numeric type", t => {
-  const sitesSchema = [{ id: 0 }];
+  const sitesSchema = [{ id: "number" }];
   const sitesData = [{ id: 0 }, { id: "Gary" }];
   const error = t.throws(() => {
     check(sitesSchema, sitesData);
@@ -34,14 +34,14 @@ test("Wrong numeric type", t => {
 });
 
 test("Correct boolean type", t => {
-  const sitesSchema = [{ has_power: true }];
+  const sitesSchema = [{ has_power: "boolean" }];
   const sitesData = [{ has_power: true }, { has_power: false }];
   const checkData = check(sitesSchema, sitesData);
   t.true(checkData);
 });
 
 test("Wrong boolean type", t => {
-  const sitesSchema = [{ has_power: true }];
+  const sitesSchema = [{ has_power: "boolean" }];
   const sitesData = [{ has_power: true }, { has_power: "false" }];
   const error = t.throws(() => {
     check(sitesSchema, sitesData);
@@ -50,7 +50,7 @@ test("Wrong boolean type", t => {
 });
 
 test("Correct base object structure", t => {
-  const sitesSchema = [{ id: 0, name: "string", has_power: true }];
+  const sitesSchema = [{ id: "number", name: "string", has_power: "boolean" }];
   const sitesData = [
     { id: 24601, name: "Janice", has_power: false },
     { id: 24602, name: "Gary", has_power: true }
@@ -60,7 +60,7 @@ test("Correct base object structure", t => {
 });
 
 test("Wrong base object structure", t => {
-  const sitesSchema = [{ id: 0, name: "string", has_power: true }];
+  const sitesSchema = [{ id: "number", name: "string", has_power: "boolean" }];
   const sitesData = [[1, 2, 3]];
   const error = t.throws(() => {
     check(sitesSchema, sitesData);
@@ -69,7 +69,7 @@ test("Wrong base object structure", t => {
 });
 
 test("Correct base array structure", t => {
-  const sitesSchema = [{ id: 0, name: "string", powers: ["string"] }];
+  const sitesSchema = [{ id: "number", name: "string", powers: ["string"] }];
   const sitesData = [
     { id: 24601, name: "Janice", powers: ["fire", "ice"] },
     { id: 24602, name: "Gary", powers: ["fire", "magic"] }
@@ -79,7 +79,7 @@ test("Correct base array structure", t => {
 });
 
 test("Wrong base array structure", t => {
-  const sitesSchema = [{ id: 0, name: "string", powers: ["string"] }];
+  const sitesSchema = [{ id: "number", name: "string", powers: ["string"] }];
   const sitesData = [
     { id: 24601, name: "Janice", powers: { power1: "fire", power2: "ice" } },
     { id: 24602, name: "Gary", powers: { power1: "fire", power2: "magic" } }
@@ -94,7 +94,7 @@ test("Wrong base array structure", t => {
 });
 
 test("Correct Array of ints", t => {
-  const sitesSchema = [{ ratings: [0] }];
+  const sitesSchema = [{ ratings: ["number"] }];
   const sitesData = [
     { ratings: [0, 5, 3, 8, 7, 9] },
     { ratings: [0, 5, 2, 9] }
@@ -104,7 +104,7 @@ test("Correct Array of ints", t => {
 });
 
 test("Wrong Array of ints", t => {
-  const sitesSchema = [{ ratings: [0] }];
+  const sitesSchema = [{ ratings: ["number"] }];
   const sitesData = [
     { ratings: [0, 5, "3", 8, 7, 9] },
     { ratings: [0, 5, 2, 9] }
@@ -116,7 +116,7 @@ test("Wrong Array of ints", t => {
 });
 
 test("Correct Array of booleans", t => {
-  const sitesSchema = [{ ratings: [true] }];
+  const sitesSchema = [{ ratings: ["boolean"] }];
   const sitesData = [
     { ratings: [true, false, true, false, true] },
     { ratings: [true, false, false, true] }
@@ -126,7 +126,7 @@ test("Correct Array of booleans", t => {
 });
 
 test("Wrong Array of booleans", t => {
-  const sitesSchema = [{ ratings: [true] }];
+  const sitesSchema = [{ ratings: ["boolean"] }];
   const sitesData = [
     { ratings: [true, false, true, false, true] },
     { ratings: [true, false, 9, true] }
@@ -138,7 +138,7 @@ test("Wrong Array of booleans", t => {
 });
 
 test("Order of keys does not matter", t => {
-  const sitesSchema = [{ powers: ["string"], name: "string", id: 0 }];
+  const sitesSchema = [{ powers: ["string"], name: "string", id: "number" }];
   const sitesData = [
     { id: 24601, name: "Janice", powers: ["fire", "ice"] },
     { powers: ["fire", "magic"], id: 24602, name: "Gary" }
@@ -150,9 +150,14 @@ test("Order of keys does not matter", t => {
 test("Correctly deeply nested", t => {
   const sitesSchema = [
     {
-      powers: [{ id: "string", name: [{ id: "string", num: 0, avail: true }] }],
+      powers: [
+        {
+          id: "string",
+          name: [{ id: "string", num: "number", avail: "boolean" }]
+        }
+      ],
       name: "string",
-      id: 0
+      id: "number"
     }
   ];
   const sitesData = [
@@ -194,9 +199,14 @@ test("Correctly deeply nested", t => {
 test("Wrong deeply nested", t => {
   const sitesSchema = [
     {
-      powers: [{ id: "string", name: [{ id: "string", num: 0, avail: true }] }],
+      powers: [
+        {
+          id: "string",
+          name: [{ id: "string", num: "number", avail: "boolean" }]
+        }
+      ],
       name: "string",
-      id: 0
+      id: "number"
     }
   ];
   const sitesData = [
