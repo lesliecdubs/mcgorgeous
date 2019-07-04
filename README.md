@@ -4,6 +4,26 @@ Validates the schema of a JSON data return type
 
 ## Usage
 
+### Install
+Using browser
+
+```html
+<script src="dist/mcgorgeous.min.js"></script>
+```
+
+Using Yarn
+```
+yarn add mcgorgeous
+```
+Using NPM
+```
+npm install mcgorgeous
+```
+
+### JavaScript
+
+Use via `try` and `catch`
+
 ```javascript
 import check from "mcgorgeous";
 
