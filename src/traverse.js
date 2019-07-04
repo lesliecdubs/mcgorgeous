@@ -14,12 +14,14 @@ import {
  * {name: String}
  **/
 export function traverseObjects(schema, data) {
-  const isSchemaAnObject = isPlainObject(schema);
-  const isDataAnObject = isPlainObject(data);
-  const isSchemaAnArray = Array.isArray(schema);
-  const isDataAnArray = Array.isArray(data);
-  if (isSchemaAnArray) {
-    if (!isDataAnArray) {
+  // On the top level we have three "types" of cases
+  // - Arrays
+  // - Objects
+  // - Literals
+
+  if (Array.isArray(schema)) {
+    // Handling arrays
+    if (!Array.isArray(data)) {
       throw Error(
         `Schema is looking for "array", data is ${JSON.stringify(data)}`
       );
@@ -28,12 +30,14 @@ export function traverseObjects(schema, data) {
     while (i--) {
       traverseObjects(schema[0], data[i]);
     }
-  } else if (isSchemaAnObject) {
-    if (isDataAnArray || !isDataAnObject) {
+  } else if (isPlainObject(schema)) {
+    // Handling object
+    if (Array.isArray(data) || !isPlainObject(data)) {
       throw Error(
         `Schema is looking for "object", data is ${JSON.stringify(data)}`
       );
     }
+
     //loop object
     const schemaKeys = Object.keys(schema).sort();
     const dataKeys = Object.keys(data).sort();
@@ -44,11 +48,13 @@ export function traverseObjects(schema, data) {
         )}`
       );
     }
+
     let i = schemaKeys.length;
     while (i--) {
       traverseObjects(schema[schemaKeys[i]], data[dataKeys[i]]);
     }
   } else {
+    // Handling literals
     switch (schema) {
       case "string":
         if (!isString(data)) {
@@ -65,7 +71,10 @@ export function traverseObjects(schema, data) {
           throw Error(`"${data}" is not a boolean.`);
         }
         break;
+      default:
+        throw new Error(`Unknown schema type: ${JSON.stringify(schema)}`);
     }
   }
+
   return true;
 }
