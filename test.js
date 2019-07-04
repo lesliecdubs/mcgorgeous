@@ -30,7 +30,7 @@ test("Wrong numeric type", t => {
   const error = t.throws(() => {
     check(sitesSchema, sitesData);
   }, Error);
-  t.is(error.message, '"Gary" is not numeric.');
+  t.is(error.message, '"Gary" is not a number.');
 });
 
 test("Correct boolean type", t => {
@@ -47,4 +47,192 @@ test("Wrong boolean type", t => {
     check(sitesSchema, sitesData);
   }, Error);
   t.is(error.message, '"false" is not a boolean.');
+});
+
+test("Correct base object structure", t => {
+  const sitesSchema = [{ id: 0, name: "string", has_power: true }];
+  const sitesData = [
+    { id: 24601, name: "Janice", has_power: false },
+    { id: 24602, name: "Gary", has_power: true }
+  ];
+  const checkData = check(sitesSchema, sitesData);
+  t.true(checkData);
+});
+
+test("Wrong base object structure", t => {
+  const sitesSchema = [{ id: 0, name: "string", has_power: true }];
+  const sitesData = [[1, 2, 3]];
+  const error = t.throws(() => {
+    check(sitesSchema, sitesData);
+  }, Error);
+  t.is(error.message, `Schema is looking for "object", data is [1,2,3]`);
+});
+
+test("Correct base array structure", t => {
+  const sitesSchema = [{ id: 0, name: "string", powers: ["string"] }];
+  const sitesData = [
+    { id: 24601, name: "Janice", powers: ["fire", "ice"] },
+    { id: 24602, name: "Gary", powers: ["fire", "magic"] }
+  ];
+  const checkData = check(sitesSchema, sitesData);
+  t.true(checkData);
+});
+
+test("Wrong base array structure", t => {
+  const sitesSchema = [{ id: 0, name: "string", powers: ["string"] }];
+  const sitesData = [
+    { id: 24601, name: "Janice", powers: { power: "fire", power: "ice" } },
+    { id: 24602, name: "Gary", powers: { power: "fire", power: "magic" } }
+  ];
+  const error = t.throws(() => {
+    check(sitesSchema, sitesData);
+  }, Error);
+  t.is(
+    error.message,
+    'Schema is looking for "array", data is {"power":"magic"}'
+  );
+});
+
+test("Correct Array of ints", t => {
+  const sitesSchema = [{ ratings: [0] }];
+  const sitesData = [
+    { ratings: [0, 5, 3, 8, 7, 9] },
+    { ratings: [0, 5, 2, 9] }
+  ];
+  const checkData = check(sitesSchema, sitesData);
+  t.true(checkData);
+});
+
+test("Wrong Array of ints", t => {
+  const sitesSchema = [{ ratings: [0] }];
+  const sitesData = [
+    { ratings: [0, 5, "3", 8, 7, 9] },
+    { ratings: [0, 5, 2, 9] }
+  ];
+  const error = t.throws(() => {
+    check(sitesSchema, sitesData);
+  }, Error);
+  t.is(error.message, '"3" is not a number.');
+});
+
+test("Correct Array of booleans", t => {
+  const sitesSchema = [{ ratings: [true] }];
+  const sitesData = [
+    { ratings: [true, false, true, false, true] },
+    { ratings: [true, false, false, true] }
+  ];
+  const checkData = check(sitesSchema, sitesData);
+  t.true(checkData);
+});
+
+test("Wrong Array of booleans", t => {
+  const sitesSchema = [{ ratings: [true] }];
+  const sitesData = [
+    { ratings: [true, false, true, false, true] },
+    { ratings: [true, false, 9, true] }
+  ];
+  const error = t.throws(() => {
+    check(sitesSchema, sitesData);
+  }, Error);
+  t.is(error.message, '"9" is not a boolean.');
+});
+
+test("Order of keys does not matter", t => {
+  const sitesSchema = [{ powers: ["string"], name: "string", id: 0 }];
+  const sitesData = [
+    { id: 24601, name: "Janice", powers: ["fire", "ice"] },
+    { powers: ["fire", "magic"], id: 24602, name: "Gary" }
+  ];
+  const checkData = check(sitesSchema, sitesData);
+  t.true(checkData);
+});
+
+test("Correctly deeply nested", t => {
+  const sitesSchema = [
+    {
+      powers: [{ id: "string", name: [{ id: "string", num: 0, avail: true }] }],
+      name: "string",
+      id: 0
+    }
+  ];
+  const sitesData = [
+    {
+      powers: [
+        { id: "fjeijd", name: [{ id: "239jrj", num: 443, avail: false }] }
+      ],
+      name: "Gary",
+      id: 232333
+    },
+    {
+      powers: [
+        { id: "dfdf33e", name: [{ id: "dsds", num: 3232, avail: true }] }
+      ],
+      name: "Susan",
+      id: 22233344556
+    },
+    {
+      powers: [
+        { id: "2wk2wk", name: [{ id: "k2kw2", num: 398574, avail: false }] },
+        {
+          id: "2wk2wk",
+          name: [
+            { id: "33dfd", num: 398574, avail: true },
+            { id: "dfkdf", num: 398574, avail: false },
+            { id: "nvnfvnf", num: 398574, avail: true }
+          ]
+        },
+        { id: "2wk2wk", name: [{ id: "k2kw2", num: 398574, avail: false }] }
+      ],
+      name: "Vivian",
+      id: 3984574874
+    }
+  ];
+  const checkData = check(sitesSchema, sitesData);
+  t.true(checkData);
+});
+
+test("Wrong deeply nested", t => {
+  const sitesSchema = [
+    {
+      powers: [{ id: "string", name: [{ id: "string", num: 0, avail: true }] }],
+      name: "string",
+      id: 0
+    }
+  ];
+  const sitesData = [
+    {
+      powers: [
+        { id: "fjeijd", name: [{ id: "239jrj", num: 443, avail: false }] }
+      ],
+      name: "Gary",
+      id: 232333
+    },
+    {
+      powers: [
+        { id: "dfdf33e", name: [{ id: "dsds", num: 3232, avail: true }] }
+      ],
+      name: "Susan",
+      id: 22233344556
+    },
+    {
+      powers: [
+        { id: "2wk2wk", name: [{ id: "k2kw2", num: 398574, avail: false }] },
+        {
+          id: "2wk2wk",
+          name: [
+            { id: "33dfd", num: 398574, avail: true },
+            { id: "dfkdf", num: "398574", avail: false },
+            { id: "nvnfvnf", num: 398574, avail: true }
+          ]
+        },
+        { id: "2wk2wk", name: [{ id: "k2kw2", num: 398574, avail: false }] }
+      ],
+      name: "Vivian",
+      id: 3984574874
+    }
+  ];
+  const error = t.throws(() => {
+    check(sitesSchema, sitesData);
+  }, Error);
+  t.is(error.message, '"398574" is not a number.');
 });

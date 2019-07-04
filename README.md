@@ -11,10 +11,10 @@ const sitesSchema = [{ name: "string" }];
 // data coming back from server 
 const sitesData = [{ name: "Jeff" }, { name: "Gary" }];
 try{
-	check(sitesSchema, sitesData);
+  check(sitesSchema, sitesData);
 } catch(e) {
-	// throw proper error
-	console.log(e.message);
+  // throw proper error
+  console.log(e.message);
 }
 ```
 
@@ -38,6 +38,6 @@ try{
 ### Array of type
 ```javascript
 {
-	names: ["string"]
+  names: ["string"]
 }
 ```

@@ -322,8 +322,8 @@ export function isBoolean(b) {
   return b === true || b === false;
 }
 
-export function isNumeric(n) {
-  return !isNaN(parseFloat(n)) && isFinite(n);
+export function isNumber(n) {
+  return typeof n == "number";
 }
 
 export function isString(x) {

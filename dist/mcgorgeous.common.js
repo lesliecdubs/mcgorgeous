@@ -136,8 +136,8 @@ function looseEqual(a, b) {
 function isBoolean(b) {
   return b === true || b === false;
 }
-function isNumeric(n) {
-  return !isNaN(parseFloat(n)) && isFinite(n);
+function isNumber(n) {
+  return typeof n == "number";
 }
 function isString(x) {
   return Object.prototype.toString.call(x) === "[object String]";
@@ -160,9 +160,19 @@ function _traverseObjects(val1, val2) {
   var isA2 = Array.isArray(val2);
   var i, keys1, keys2;
 
-  if (isO1 || isO2) {
-    if (!isO2 || !isO1) {
-      throw Error("Schema has object where data does not");
+  if (isA1) {
+    if (!isA2) {
+      throw Error("Schema is looking for \"array\", data is ".concat(JSON.stringify(val2)));
+    }
+
+    i = val2.length;
+
+    while (i--) {
+      _traverseObjects(val1[0], val2[i]);
+    }
+  } else if (isO1) {
+    if (!isO2) {
+      throw Error("Schema is looking for \"object\", data is ".concat(JSON.stringify(val2)));
     } //loop object
 
 
@@ -178,16 +188,6 @@ function _traverseObjects(val1, val2) {
     while (i--) {
       _traverseObjects(val1[keys1[i]], val2[keys2[i]]);
     }
-  } else if (isA1 || isA2) {
-    if (!isA2 || !isA1) {
-      throw Error("Schema has Array where data does not");
-    }
-
-    i = val2.length;
-
-    while (i--) {
-      _traverseObjects(val1[0], val2[i]);
-    }
   } else {
     switch (val1) {
       case "string":
@@ -198,8 +198,8 @@ function _traverseObjects(val1, val2) {
         break;
 
       case 0:
-        if (!isNumeric(val2)) {
-          throw Error("\"".concat(val2, "\" is not numeric."));
+        if (!isNumber(val2)) {
+          throw Error("\"".concat(val2, "\" is not a number."));
         }
 
         break;
