@@ -9,6 +9,10 @@ import {
 
 // similar to VueJS traverse https://github.com/vuejs/vue/blob/52719ccab8fccffbdf497b96d3731dc86f04c1ce/src/core/observer/traverse.js#L19
 // JSON data won't be cyclical so we don't need to do id checking
+/**
+ * {prop: type} e.g.
+ * {name: String}
+ **/
 export function traverseObjects(schema, data) {
   const isSchemaAnObject = isPlainObject(schema);
   const isDataAnObject = isPlainObject(data);
