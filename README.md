@@ -41,3 +41,5 @@ try{
   names: ["string"]
 }
 ```
+
+Check out the tests for full examples
