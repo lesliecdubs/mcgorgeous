@@ -1,8 +1,15 @@
 {
   "name": "mcgorgeous",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Checks schema of JSON return types",
-  "main": "./src/index.js",
+  "main": "./dist/mcgorgeous.common.js",
+  "module": "./dist/mcgorgeous.esm.js",
+  "unpkg": "./dist/mcgorgeous.js",
+  "jsdelivr": "./dist/mcgorgeous.js",
+  "files": [
+    "src",
+    "dist/*.js"
+  ],
   "scripts": {
     "lint": "prettier --write \"{./test.js,./src/*.js,./src/**/*.js}\"",
     "build": "npm run lint && rollup --config",
@@ -30,6 +37,8 @@
     "prettier": "^1.18.2",
     "rollup": "^1.16.4",
     "rollup-plugin-babel": "^4.3.3",
-    "rollup-plugin-node-resolve": "^5.2.0"
-  }
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-uglify": "^6.0.2"
+  },
+  "dependencies": {}
 }
