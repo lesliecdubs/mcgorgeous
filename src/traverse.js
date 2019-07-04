@@ -26,8 +26,9 @@ export function traverseObjects(schema, data) {
         `Schema is looking for "array", data is ${JSON.stringify(data)}`
       );
     }
-    for (const item of data) {
-      traverseObjects(schema[0], item);
+    let i = data.length;
+    while (i--) {
+      traverseObjects(schema[0], data[i]);
     }
   } else if (isPlainObject(schema)) {
     // Handling object
