@@ -144,7 +144,7 @@
     return typeof n == "number";
   }
   function isString(x) {
-    return Object.prototype.toString.call(x) === "[object String]";
+    return typeof x === "string";
   }
   function arrayDifference(arr1, arr2) {
     return arr1.filter(function (x) {

@@ -327,7 +327,7 @@ export function isNumber(n) {
 }
 
 export function isString(x) {
-  return Object.prototype.toString.call(x) === "[object String]";
+  return typeof x === "string";
 }
 
 export function arrayDifference(arr1, arr2) {
