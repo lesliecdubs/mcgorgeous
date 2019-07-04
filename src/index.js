@@ -1,9 +1,9 @@
-import { checkObjectSchema } from "./traverse";
+import { traverseObjects } from "./traverse";
 
 export default function(schema, data) {
   /**
    * {prop: type} e.g.
    * {name: String}
    **/
-  return checkObjectSchema(schema, data);
+  return traverseObjects(schema, data);
 }

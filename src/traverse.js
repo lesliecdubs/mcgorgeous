@@ -14,26 +14,25 @@ export function traverseObjects(schema, data) {
   const isDataAnObject = isPlainObject(data);
   const isSchemaAnArray = Array.isArray(schema);
   const isDataAnArray = Array.isArray(data);
-  let i, schemaKeys, dataKeys;
   if (isSchemaAnArray) {
     if (!isDataAnArray) {
       throw Error(
         `Schema is looking for "array", data is ${JSON.stringify(data)}`
       );
     }
-    i = data.length;
+    let i = data.length;
     while (i--) {
       traverseObjects(schema[0], data[i]);
     }
   } else if (isSchemaAnObject) {
-    if (!isDataAnObject) {
+    if (isDataAnArray || !isDataAnObject) {
       throw Error(
         `Schema is looking for "object", data is ${JSON.stringify(data)}`
       );
     }
     //loop object
-    schemaKeys = Object.keys(schema).sort();
-    dataKeys = Object.keys(data).sort();
+    const schemaKeys = Object.keys(schema).sort();
+    const dataKeys = Object.keys(data).sort();
     if (!looseEqual(schemaKeys, dataKeys)) {
       throw Error(
         `Keys in schema don't match keys in data: ${JSON.stringify(
@@ -41,7 +40,7 @@ export function traverseObjects(schema, data) {
         )}`
       );
     }
-    i = schemaKeys.length;
+    let i = schemaKeys.length;
     while (i--) {
       traverseObjects(schema[schemaKeys[i]], data[dataKeys[i]]);
     }

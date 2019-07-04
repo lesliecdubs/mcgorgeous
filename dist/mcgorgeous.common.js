@@ -148,65 +148,61 @@ function arrayDifference(arr1, arr2) {
   });
 }
 
-function checkObjectSchema(schema, obj) {
-  return _traverseObjects(schema, obj);
-} // similar to VueJS traverse https://github.com/vuejs/vue/blob/52719ccab8fccffbdf497b96d3731dc86f04c1ce/src/core/observer/traverse.js#L19
 // JSON data won't be cyclical so we don't need to do id checking
 
-function _traverseObjects(val1, val2) {
-  var isO1 = isPlainObject(val1);
-  var isO2 = isPlainObject(val2);
-  var isA1 = Array.isArray(val1);
-  var isA2 = Array.isArray(val2);
-  var i, keys1, keys2;
+function traverseObjects(schema, data) {
+  var isSchemaAnObject = isPlainObject(schema);
+  var isDataAnObject = isPlainObject(data);
+  var isSchemaAnArray = Array.isArray(schema);
+  var isDataAnArray = Array.isArray(data);
 
-  if (isA1) {
-    if (!isA2) {
-      throw Error("Schema is looking for \"array\", data is ".concat(JSON.stringify(val2)));
+  if (isSchemaAnArray) {
+    if (!isDataAnArray) {
+      throw Error("Schema is looking for \"array\", data is ".concat(JSON.stringify(data)));
     }
 
-    i = val2.length;
+    var i = data.length;
 
     while (i--) {
-      _traverseObjects(val1[0], val2[i]);
+      traverseObjects(schema[0], data[i]);
     }
-  } else if (isO1) {
-    if (!isO2) {
-      throw Error("Schema is looking for \"object\", data is ".concat(JSON.stringify(val2)));
+  } else if (isSchemaAnObject) {
+    if (isDataAnArray || !isDataAnObject) {
+      throw Error("Schema is looking for \"object\", data is ".concat(JSON.stringify(data)));
     } //loop object
 
 
-    keys1 = Object.keys(val1).sort();
-    keys2 = Object.keys(val2).sort();
+    var schemaKeys = Object.keys(schema).sort();
+    var dataKeys = Object.keys(data).sort();
 
-    if (!looseEqual(keys1, keys2)) {
-      throw Error("Keys in schema don't match keys in data: ".concat(JSON.stringify(arrayDifference(keys1, keys2))));
+    if (!looseEqual(schemaKeys, dataKeys)) {
+      throw Error("Keys in schema don't match keys in data: ".concat(JSON.stringify(arrayDifference(schemaKeys, dataKeys))));
     }
 
-    i = keys1.length;
+    var _i = schemaKeys.length;
 
-    while (i--) {
-      _traverseObjects(val1[keys1[i]], val2[keys2[i]]);
+    while (_i--) {
+      traverseObjects(schema[schemaKeys[_i]], data[dataKeys[_i]]);
     }
   } else {
-    switch (val1) {
+    switch (schema) {
       case "string":
-        if (!isString(val2)) {
-          throw Error("\"".concat(val2, "\" is not a string."));
+        if (!isString(data)) {
+          throw Error("\"".concat(data, "\" is not a string."));
         }
 
         break;
 
       case 0:
-        if (!isNumber(val2)) {
-          throw Error("\"".concat(val2, "\" is not a number."));
+        if (!isNumber(data)) {
+          throw Error("\"".concat(data, "\" is not a number."));
         }
 
         break;
 
       case true:
-        if (!isBoolean(val2)) {
-          throw Error("\"".concat(val2, "\" is not a boolean."));
+        if (!isBoolean(data)) {
+          throw Error("\"".concat(data, "\" is not a boolean."));
         }
 
         break;
@@ -221,7 +217,7 @@ function index (schema, data) {
    * {prop: type} e.g.
    * {name: String}
    **/
-  return checkObjectSchema(schema, data);
+  return traverseObjects(schema, data);
 }
 
 module.exports = index;
