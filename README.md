@@ -47,12 +47,12 @@ try{
 
 ### Numeric type
 ```javascript
-[{ id: 0 }];
+[{ id: "number" }];
 ```
 
 ### Boolean type
 ```javascript
-[{ id: true }];
+[{ id: "boolean" }];
 ```
 
 ### Array of type
