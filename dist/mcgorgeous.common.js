@@ -150,7 +150,7 @@ function arrayDifference(arr1, arr2) {
 
 function checkObjectSchema(schema, obj) {
   return _traverseObjects(schema, obj);
-} // taken from https://github.com/vuejs/vue/blob/52719ccab8fccffbdf497b96d3731dc86f04c1ce/src/core/observer/traverse.js#L19
+} // similar to VueJS traverse https://github.com/vuejs/vue/blob/52719ccab8fccffbdf497b96d3731dc86f04c1ce/src/core/observer/traverse.js#L19
 // JSON data won't be cyclical so we don't need to do id checking
 
 function _traverseObjects(val1, val2) {

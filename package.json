@@ -1,6 +1,6 @@
 {
   "name": "mcgorgeous",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Checks schema of JSON return types",
   "main": "./src/index.js",
   "scripts": {
