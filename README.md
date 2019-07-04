@@ -4,6 +4,8 @@ Validates the schema of a JSON data return type
 
 [![CircleCI](https://circleci.com/gh/jschatz1/mcgorgeous.svg?style=svg)](https://circleci.com/gh/jschatz1/mcgorgeous)
 
+## [Examples](https://github.com/jschatz1/mcgeorgous_examples)
+
 ## Usage
 
 ### Install
