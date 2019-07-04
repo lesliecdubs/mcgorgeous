@@ -1,4 +1,3 @@
-import { isTrue } from "./util";
 import { checkObjectSchema } from "./traverse";
 
 export default function(schema, data) {

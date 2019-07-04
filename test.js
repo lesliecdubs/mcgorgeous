@@ -81,15 +81,15 @@ test("Correct base array structure", t => {
 test("Wrong base array structure", t => {
   const sitesSchema = [{ id: 0, name: "string", powers: ["string"] }];
   const sitesData = [
-    { id: 24601, name: "Janice", powers: { power: "fire", power: "ice" } },
-    { id: 24602, name: "Gary", powers: { power: "fire", power: "magic" } }
+    { id: 24601, name: "Janice", powers: { power1: "fire", power2: "ice" } },
+    { id: 24602, name: "Gary", powers: { power1: "fire", power2: "magic" } }
   ];
   const error = t.throws(() => {
     check(sitesSchema, sitesData);
   }, Error);
   t.is(
     error.message,
-    'Schema is looking for "array", data is {"power":"magic"}'
+    'Schema is looking for "array", data is {"power1":"fire","power2":"magic"}'
   );
 });
 

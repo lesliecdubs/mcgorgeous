@@ -11,7 +11,7 @@
     "dist/*.js"
   ],
   "scripts": {
-    "lint": "prettier --write \"{./test.js,./src/*.js,./src/**/*.js}\"",
+    "lint": "eslint src/*.js test.js && prettier --write \"{./test.js,./src/*.js,./src/**/*.js}\"",
     "build": "npm run lint && rollup --config",
     "test": "ava"
   },
@@ -34,6 +34,8 @@
     "@babel/core": "^7.4.5",
     "@babel/preset-env": "^7.4.5",
     "ava": "^2.1.0",
+    "babel-eslint": "^10.0.2",
+    "eslint": "^6.0.1",
     "prettier": "^1.18.2",
     "rollup": "^1.16.4",
     "rollup-plugin-babel": "^4.3.3",
