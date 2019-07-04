@@ -1,6 +1,6 @@
 {
   "name": "mcgorgeous",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Checks schema of JSON return types",
   "main": "./dist/mcgorgeous.common.js",
   "module": "./dist/mcgorgeous.esm.js",
