@@ -246,3 +246,12 @@ test("Wrong deeply nested", t => {
   }, Error);
   t.is(error.message, '"398574" is not a number.');
 });
+
+test("Unknown schema type", t => {
+  const sitesSchema = [{ name: "array" }];
+  const sitesData = [{ name: "Jeff" }, { name: "Gary" }];
+  const error = t.throws(() => {
+    check(sitesSchema, sitesData);
+  }, Error);
+  t.is(error.message, 'Unknown schema type: "array"');
+});
