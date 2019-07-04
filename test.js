@@ -89,7 +89,7 @@ test("Wrong base array structure", t => {
   }, Error);
   t.is(
     error.message,
-    'Schema is looking for "array", data is {"power1":"fire","power2":"magic"}'
+    'Schema is looking for "array", data is {"power1":"fire","power2":"ice"}'
   );
 });
 
