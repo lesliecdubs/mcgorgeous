@@ -43,6 +43,13 @@ test("Boolean can be null or blank", t => {
   t.true(checkData);
 });
 
+test("Array can be empty", t => {
+  const sitesSchema = { data: [["number", "number"]] };
+  const sitesData = { data: [] };
+  const checkData = check(sitesSchema, sitesData);
+  t.true(checkData);
+});
+
 test("String cannot be null no error", t => {
   const sitesSchema = [{ name: "string notnull" }];
   const sitesData = [{ name: "Jeff" }, { name: "Gary" }];
